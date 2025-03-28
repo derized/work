@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Timestamp Generator</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, button { margin: 10px; padding: 10px; }
+        .timestamp { margin: 5px; padding: 5px; border: 1px solid #ccc; display: inline-block; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>Discord Timestamp Generator</h2>
+    <input type="datetime-local" id="datetime" />
+    <button onclick="generateTimestamps()">Generate</button>
+    <div id="output"></div>
+
+    <script>
+        function generateTimestamps() {
+            const input = document.getElementById('datetime').value;
+            if (!input) return alert('Please select a date and time!');
+            
+            const unixTime = Math.floor(new Date(input).getTime() / 1000);
+            const formats = {
+                'Default': `<t:${unixTime}>`,
+                'Short Time': `<t:${unixTime}:t>` ,
+                'Long Time': `<t:${unixTime}:T>` ,
+                'Short Date': `<t:${unixTime}:d>` ,
+                'Long Date': `<t:${unixTime}:D>` ,
+                'Full DateTime': `<t:${unixTime}:f>` ,
+                'Full DateTime with Weekday': `<t:${unixTime}:F>` ,
+                'Relative': `<t:${unixTime}:R>`
+            };
+            
+            let outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '';
+            for (let [label, value] of Object.entries(formats)) {
+                let div = document.createElement('div');
+                div.className = 'timestamp';
+                div.textContent = `${label}: ${value}`;
+                div.onclick = () => navigator.clipboard.writeText(value);
+                outputDiv.appendChild(div);
+            }
+        }
+    </script>
+</body>
+</html>
