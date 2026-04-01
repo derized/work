@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Good News Only</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #fdf6ec;
+    --ink: #1a1208;
+    --accent: #e8622a;
+    --warm: #f5c842;
+    --muted: #9c8a72;
+    --card: #fff9f0;
+    --border: #e8d9c4;
+    --tag-bg: #fdecd9;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    padding: 2.5rem 2rem 1.2rem;
+    border-bottom: 2px solid var(--ink);
+    flex-wrap: wrap;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    letter-spacing: -1px;
+    line-height: 1;
+  }
+  .logo span { color: var(--accent); }
+
+  .tagline {
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    flex: 1;
+    text-align: right;
+    min-width: 160px;
+  }
+
+  /* ── CONTROLS ── */
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 1rem 2rem;
+    border-bottom: 1px solid var(--border);
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 0.3rem 0.85rem;
+    border-radius: 999px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.18s;
+  }
+  .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+  .refresh-btn {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.3rem 0.9rem;
+    border: 1.5px solid var(--ink);
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 999px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.18s;
+  }
+  .refresh-btn:hover { background: var(--accent); border-color: var(--accent); }
+  .refresh-btn svg { transition: transform 0.5s; }
+  .refresh-btn.spinning svg { transform: rotate(360deg); }
+
+  /* ── GRID ── */
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5px;
+    background: var(--border);
+    border-top: 1px solid var(--border);
+  }
+
+  .card {
+    background: var(--card);
+    padding: 1.6rem 1.5rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    transition: background 0.2s;
+    opacity: 0;
+    transform: translateY(12px);
+    animation: fadeUp 0.4s forwards;
+  }
+  .card:hover { background: #fffdf7; }
+
+  @keyframes fadeUp {
+    to { opacity: 1; transform: none; }
+  }
+
+  .card-meta {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+
+  .tag {
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+    padding: 0.18rem 0.55rem;
+    border-radius: 3px;
+    background: var(--tag-bg);
+    color: var(--accent);
+  }
+
+  .source {
+    font-size: 0.72rem;
+    color: var(--muted);
+    margin-left: auto;
+  }
+
+  .card-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.12rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+
+  .card-body {
+    font-size: 0.83rem;
+    color: #5a4e3d;
+    line-height: 1.6;
+    flex: 1;
+  }
+
+  .card-footer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.3rem;
+  }
+
+  .read-link {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--accent);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    padding-bottom: 1px;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.15s;
+  }
+  .read-link:hover { border-color: var(--accent); }
+
+  .emoji-badge {
+    font-size: 1.1rem;
+    margin-left: auto;
+  }
+
+  /* ── DATE STAMP ── */
+  .datestamp {
+    padding: 0.5rem 2rem;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* ── EMPTY STATE ── */
+  .empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 4rem 2rem;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--muted);
+    font-size: 1.2rem;
+  }
+
+  /* ── STAGGER delay ── */
+  .card:nth-child(1) { animation-delay: 0.04s; }
+  .card:nth-child(2) { animation-delay: 0.09s; }
+  .card:nth-child(3) { animation-delay: 0.14s; }
+  .card:nth-child(4) { animation-delay: 0.19s; }
+  .card:nth-child(5) { animation-delay: 0.24s; }
+  .card:nth-child(6) { animation-delay: 0.28s; }
+  .card:nth-child(7) { animation-delay: 0.32s; }
+  .card:nth-child(8) { animation-delay: 0.36s; }
+  .card:nth-child(9) { animation-delay: 0.40s; }
+
+  footer {
+    padding: 1.5rem 2rem;
+    border-top: 1px solid var(--border);
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-align: center;
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Good<span>News</span> Only.</div>
+  <div class="tagline">✦ A curated feed of bright spots ✦</div>
+</header>
+
+<div class="controls" id="controls">
+  <button class="filter-btn active" data-cat="all">All</button>
+  <button class="filter-btn" data-cat="science">Science</button>
+  <button class="filter-btn" data-cat="community">Community</button>
+  <button class="filter-btn" data-cat="environment">Environment</button>
+  <button class="filter-btn" data-cat="health">Health</button>
+  <button class="filter-btn" data-cat="animals">Animals</button>
+  <button class="refresh-btn" id="refreshBtn">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="23 4 23 10 17 10"></polyline>
+      <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+    </svg>
+    Refresh
+  </button>
+</div>
+
+<div class="datestamp" id="datestamp"></div>
+
+<div class="grid" id="grid"></div>
+
+<footer>Powered by good vibes &amp; hand-curated sources · No doom scrolling allowed</footer>
+
+<script>
+  // ── SEED DATA ─────────────────────────────────────────────────────────────
+  const stories = [
+    {
+      headline: "Scientists Grow Coral Reef Fragments at Record Speed in New Restoration Trial",
+      body: "Marine biologists in Florida have accelerated coral regrowth by 40× using a novel micro-fragmentation technique, with transplanted corals already forming new colonies on damaged reefs.",
+      tag: "environment", emoji: "🪸",
+      source: "Nature News",
+      url: "https://www.nature.com"
+    },
+    {
+      headline: "First Gene Therapy Treatment Restores Hearing in Children Born Deaf",
+      body: "A landmark clinical trial showed that children with a specific inherited form of deafness regained functional hearing within weeks of a single ear injection, with no serious side effects reported.",
+      tag: "health", emoji: "👂",
+      source: "The Lancet",
+      url: "https://www.thelancet.com"
+    },
+    {
+      headline: "Teen Invents Biodegradable Plastic Substitute from Banana Peels",
+      body: "A 17-year-old from Indonesia won the global science fair with a fully biodegradable packaging film made from banana peel starch that dissolves in warm water within 48 hours.",
+      tag: "science", emoji: "🍌",
+      source: "Scientific American",
+      url: "https://www.scientificamerican.com"
+    },
+    {
+      headline: "Bald Eagle Population Surpasses 300,000 for First Time Since 1963",
+      body: "Fifty years after near extinction, the bald eagle now thrives across all 48 contiguous U.S. states, a conservation comeback described by wildlife officials as one of the greatest in American history.",
+      tag: "animals", emoji: "🦅",
+      source: "Audubon Society",
+      url: "https://www.audubon.org"
+    },
+    {
+      headline: "City of Amsterdam Converts Old Canals into Swimming Zones, Water Now Cleanest in 100 Years",
+      body: "After a decade of cleanup efforts, Amsterdam officially opened three historic canal stretches to public swimming, with water quality reaching a century-high after advanced filtration systems were installed.",
+      tag: "environment", emoji: "🏊",
+      source: "Guardian",
+      url: "https://www.theguardian.com"
+    },
+    {
+      headline: "Community Fridge Network Feeds 50,000 Families Across 200 U.S. Cities",
+      body: "The 'Freedge' movement — a grassroots network of outdoor refrigerators stocked by neighbors — has quietly expanded to 200 cities, diverting millions of pounds of food from landfills while addressing local food insecurity.",
+      tag: "community", emoji: "🥦",
+      source: "Civil Eats",
+      url: "https://civileats.com"
+    },
+    {
+      headline: "New Alzheimer's Drug Slows Cognitive Decline by 35% in Phase 3 Trial",
+      body: "Researchers reported the largest-ever reduction in Alzheimer's progression seen in a clinical trial, with patients in early stages retaining significantly more memory and daily function over 18 months.",
+      tag: "health", emoji: "🧠",
+      source: "NEJM",
+      url: "https://www.nejm.org"
+    },
+    {
+      headline: "Wild Tiger Population Rises 40% Globally Since 2010, New Census Shows",
+      body: "The global tiger census now counts over 5,500 wild tigers — a 40% increase in 14 years — driven by habitat protection programs across India, Nepal, and Southeast Asia.",
+      tag: "animals", emoji: "🐯",
+      source: "WWF",
+      url: "https://www.worldwildlife.org"
+    },
+    {
+      headline: "Solar Energy Hits Record Low Cost, Now Cheaper than Coal in 130 Countries",
+      body: "The International Energy Agency reports that utility-scale solar power has fallen to its lowest price ever, making it the cheapest electricity source in history across the majority of the world.",
+      tag: "environment", emoji: "☀️",
+      source: "IEA",
+      url: "https://www.iea.org"
+    },
+    {
+      headline: "Brazilian Town Erases Hunger With Universal School Garden Program",
+      body: "A small town in Minas Gerais became the first in Brazil declared 'food-secure' after every public school adopted a rooftop garden, supplying fresh produce both to students and their families.",
+      tag: "community", emoji: "🌱",
+      source: "BBC Future",
+      url: "https://www.bbc.com/future"
+    },
+    {
+      headline: "AI Tool Deciphers 2,000-Year-Old Charred Herculaneum Scrolls",
+      body: "Computer scientists and classicists collaborated to recover thousands of legible words from scrolls buried by Mount Vesuvius in 79 AD, with new philosophical texts now being translated for the first time.",
+      tag: "science", emoji: "📜",
+      source: "Nature",
+      url: "https://www.nature.com"
+    },
+    {
+      headline: "Iceland Becomes First Country Where Gender Pay Gap Is Legally Eliminated",
+      body: "A mandatory pay audit law that requires every employer to certify equal pay annually has resulted in Iceland's certified gender pay gap dropping below 0.7%, effectively making it the world's first pay-equal nation.",
+      tag: "community", emoji: "⚖️",
+      source: "Reuters",
+      url: "https://www.reuters.com"
+    },
+  ];
+
+  // ── STATE ──────────────────────────────────────────────────────────────────
+  let activeCategory = 'all';
+  let displayedIndices = [];
+
+  function pickStories(cat, count = 9) {
+    const pool = cat === 'all' ? stories : stories.filter(s => s.tag === cat);
+    const shuffled = [...pool].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, count);
+  }
+
+  function render(cat) {
+    const grid = document.getElementById('grid');
+    const items = pickStories(cat);
+    grid.innerHTML = '';
+
+    if (items.length === 0) {
+      grid.innerHTML = '<div class="empty">No stories found in this category yet… check back soon!</div>';
+      return;
+    }
+
+    items.forEach((item, i) => {
+      const card = document.createElement('div');
+      card.className = 'card';
+      card.style.animationDelay = `${0.04 + i * 0.05}s`;
+      card.innerHTML = `
+        <div class="card-meta">
+          <span class="tag">${item.tag}</span>
+          <span class="source">${item.source}</span>
+        </div>
+        <div class="card-headline">${item.headline}</div>
+        <div class="card-body">${item.body}</div>
+        <div class="card-footer">
+          <a class="read-link" href="${item.url}" target="_blank" rel="noopener">Read more →</a>
+          <span class="emoji-badge">${item.emoji}</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+  }
+
+  function setDate() {
+    const d = new Date();
+    document.getElementById('datestamp').textContent =
+      d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  // ── FILTERS ───────────────────────────────────────────────────────────────
+  document.getElementById('controls').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-btn');
+    if (!btn) return;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    activeCategory = btn.dataset.cat;
+    render(activeCategory);
+  });
+
+  // ── REFRESH ───────────────────────────────────────────────────────────────
+  document.getElementById('refreshBtn').addEventListener('click', function() {
+    this.classList.add('spinning');
+    setTimeout(() => this.classList.remove('spinning'), 500);
+    render(activeCategory);
+  });
+
+  // ── INIT ──────────────────────────────────────────────────────────────────
+  setDate();
+  render('all');
+</script>
+</body>
+</html>
